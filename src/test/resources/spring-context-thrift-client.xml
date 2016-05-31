@@ -24,7 +24,7 @@
     <bean id="thriftZookeeper" class="cn.slimsmart.thrift.rpc.zookeeper.ZookeeperFactory"
 		destroy-method="close">
 		<property name="zkHosts"
-			value="192.168.1.90:2181" />
+			value="127.0.0.1:2181" />
 		<property name="namespace" value="cn.slimsmart.thrift.rpc.demo" />
 		<property name="connectionTimeout" value="3000" />
 		<property name="sessionTimeout" value="3000" />
@@ -41,4 +41,15 @@
         	</bean>
         </property>
     </bean>
+	<bean id="serviceProxies" class="cn.slimsmart.thrift.rpc.demo.ThriftClientMultipleServiceProxyFactory" destroy-method="close">
+		<property name="maxActive" value="5" />
+		<property name="idleTime" value="1800000" />
+		<property name="serverAddressProviders">
+			<bean class="cn.slimsmart.thrift.rpc.zookeeper.ThriftServerAddressProviderZookeeper">
+				<property name="service" value="cn.slimsmart.thrift.rpc.demo.EchoSerivce" />
+				<property name="version" value="1.0.0" />
+				<property name="zkClient" ref="thriftZookeeper" />
+			</bean>
+		</property>
+	</bean>
 </beans>
